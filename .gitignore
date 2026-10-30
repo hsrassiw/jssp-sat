@@ -10,3 +10,7 @@ venv/
 
 # Paper, kế hoạch nhóm
 docs/*.pdf
+
+# license, không đẩy lên repo
+gurobi.lic
+*.lic
