@@ -1,0 +1,3 @@
+python-sat>=1.8.dev0
+pytest
+# Người 2: ortools, docplex · Người 3: gurobipy (CPLEX cài từ bộ cài đầy đủ, xem kế hoạch)
