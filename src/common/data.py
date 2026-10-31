@@ -25,8 +25,75 @@ def ft06() -> Instance:
 
 
 def read_instance(path: str | Path) -> Instance:
-    raise NotImplementedError("Người 3: viết hàm đọc file OR-Library")
+    """Đọc một instance: dòng đầu n_jobs n_machines,
+    các dòng sau là các cặp machine duration của từng job.
+    Máy được đánh số từ 0.
+    """
+    path = Path(path)
+    lines = []
 
+    for raw in path.read_text(encoding="utf-8-sig").splitlines():
+        # Bỏ dòng trống và phần chú thích bắt đầu bằng #
+        line = raw.split("#", 1)[0].strip()
+        if line:
+            lines.append(line)
+
+    if not lines:
+        raise ValueError(f"File rỗng: {path}")
+
+    header = lines[0].split()
+    if len(header) != 2:
+        raise ValueError("Dòng đầu phải gồm: n_jobs n_machines")
+
+    n_jobs, n_machines = map(int, header)
+
+    if n_jobs <= 0 or n_machines <= 0:
+        raise ValueError("Số job và số máy phải lớn hơn 0")
+
+    if len(lines) - 1 != n_jobs:
+        raise ValueError(
+            f"Cần {n_jobs} dòng job, nhưng có {len(lines) - 1}"
+        )
+
+    rows = []
+
+    for j, line in enumerate(lines[1:]):
+        values = list(map(int, line.split()))
+
+        if len(values) != 2 * n_machines:
+            raise ValueError(
+                f"Job {j}: cần {n_machines} cặp machine duration"
+            )
+
+        row = []
+
+        for k in range(n_machines):
+            machine = values[2 * k]
+            duration = values[2 * k + 1]
+
+            if not 0 <= machine < n_machines:
+                raise ValueError(
+                    f"Job {j}, bước {k}: máy {machine} ngoài phạm vi"
+                )
+
+            if duration < 0:
+                raise ValueError(
+                    f"Job {j}, bước {k}: thời gian phải lớn hơn 0"
+                )
+
+            row.append((machine, duration))
+
+        rows.append(row)
+
+    inst = Instance.from_lists(path.stem, rows)
+
+    # Giữ số máy được khai báo trong file.
+    return Instance(
+        name=inst.name,
+        n_jobs=n_jobs,
+        n_machines=n_machines,
+        jobs=inst.jobs,
+    )
 
 def load(name_or_path: str | Path) -> Instance:
     if name_or_path == "ft06":

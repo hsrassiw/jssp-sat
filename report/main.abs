@@ -1,0 +1,1 @@
+Bản khung báo cáo tuần 1. Nghiên cứu mô hình hóa bài toán xếp lịch Job Shop cổ điển bằng hai encoding SAT, so sánh chiến lược tối ưu và các bộ giải CP, MILP. Kết quả thực nghiệm chính thức sẽ được bổ sung sau khi chạy trên cùng môi trường AWS; bản này chưa đưa ra kết luận hiệu năng.

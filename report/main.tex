@@ -1,0 +1,53 @@
+\documentclass[a4paper,fleqn]{cas-sc}
+\usepackage{fontspec}
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\usepackage[numbers]{natbib}
+\usepackage{amsmath,booktabs}
+\newcommand{\todo}[1]{\par\noindent\textit{[Cần bổ sung: #1]}\par}
+\begin{document}
+\shorttitle{JSSP bằng SAT và các bộ giải tối ưu}
+\shortauthors{Nhóm BTL2}
+\title[mode=title]{Giải bài toán Job Shop Scheduling bằng SAT: mô hình hóa và so sánh thực nghiệm}
+\author[1]{Phạm Minh Nghĩa}
+\author[1]{Nguyễn Tiến Quang}
+\author[1]{Lại Tùng Lâm}
+\affiliation[1]{organization={Trường Đại học Công nghệ, Đại học Quốc gia Hà Nội},country={Việt Nam}}
+\begin{abstract}
+Bản khung báo cáo tuần 1. Nghiên cứu mô hình hóa bài toán xếp lịch Job Shop cổ điển bằng hai encoding SAT, so sánh chiến lược tối ưu và các bộ giải CP, MILP. Kết quả thực nghiệm chính thức sẽ được bổ sung sau khi chạy trên cùng môi trường AWS; bản này chưa đưa ra kết luận hiệu năng.
+\end{abstract}
+\begin{keywords}
+Job Shop Scheduling \sep SAT \sep Incremental SAT \sep CP \sep MILP
+\end{keywords}
+\maketitle
+\section{Giới thiệu}
+JSSP yêu cầu xếp lịch các công việc gồm nhiều bước xử lý theo thứ tự cố định. Mỗi bước sử dụng một máy trong một khoảng thời gian cho trước. Mỗi máy chỉ xử lý một bước tại một thời điểm. Mục tiêu là cực tiểu hóa makespan $C_{\max}$.
+\todo{Người 3: động lực, mục tiêu và đóng góp; không khẳng định kết quả khi chưa đo.}
+\section{Các nghiên cứu liên quan}
+\todo{Người 3: trình bày paper Koshimura, paper của thầy và các hướng CP/MILP; bổ sung trích dẫn đã kiểm tra.}
+\section{Mô hình bài toán và tiền xử lý}
+Với bước $k$ của job $j$, ký hiệu $p_{j,k}$ là thời gian xử lý và $s_{j,k}$ là thời điểm bắt đầu. Các ràng buộc đảm bảo thứ tự trong job và không chồng lấn trên cùng máy.
+\subsection{Cận dưới và cận trên}
+Cận dưới là giá trị lớn nhất giữa tổng thời gian của một job và tổng tải của một máy. Cận trên lấy từ lịch hợp lệ xây dựng bằng Algorithm 1 trong tài liệu của thầy, bỏ ràng buộc công suất điện: chọn ngẫu nhiên một job chưa hoàn tất, chèn bước kế tiếp vào khoảng trống sớm nhất trên máy, lặp trong 5 giây và giữ lịch tốt nhất. Lịch tuần tự là phương án dự phòng.
+\subsection{Miền thời gian}
+Với horizon $H$, các miền được tính chỉ từ thứ tự trong job:
+\begin{align}
+ES_{j,k}&=\sum_{r<k}p_{j,r}, & LS_{j,k}&=H-\sum_{r\geq k}p_{j,r}.
+\end{align}
+Nếu $ES_{j,k}>LS_{j,k}$ thì horizon đó bất khả thi.
+\section{Các phương pháp giải}
+\subsection{Encoding E1}\todo{Người 2: biến, tám luật, giải mã.}
+\subsection{Encoding E2}\todo{Người 1: biến và ràng buộc cho JSSP thường.}
+\subsection{Chiến lược tối ưu SAT}\todo{Người 1: nhiều lần và incremental.}
+\subsection{Mô hình CP}\todo{Người 2: CP-SAT và CPLEX CP.}
+\subsection{Mô hình MILP}\todo{Người 3: biến thứ tự và ràng buộc big-M.}
+\section{Thiết lập thực nghiệm}
+\todo{Người 3: ghi loại EC2, CPU thực tế, hệ điều hành, phiên bản phần mềm, commit và seed.}
+Kế hoạch: giới hạn tổng thời gian 600 giây mỗi cấu hình, một luồng mỗi solver, cùng máy AWS. Thời gian tính từ lúc đọc dữ liệu, bao gồm tiền xử lý. Mọi lịch phải qua kiểm tra tính hợp lệ trước khi ghi kết quả. Bộ dữ liệu dự kiến gồm ft, la, orb, abz và ta.
+\section{Kết quả thực nghiệm}
+\todo{Người 3: đưa bảng và hình của Người 2 vào đây sau khi có CSV chính thức. Phân biệt OPT, FEAS, NOSOL và ERR.}
+\section{Thảo luận}\todo{Người 1: giải thích khác biệt và hạn chế.}
+\section{Kết luận}\todo{Viết sau khi có kết quả.}
+\section*{Data Availability}
+\todo{Link GitHub, benchmark, CSV và lệnh tái lập. Không đưa license hoặc khóa truy cập lên repo.}
+\end{document}

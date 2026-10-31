@@ -39,7 +39,7 @@ def run_one(source, cfg: Config, time_limit: float = TIME_LIMIT, solve=None) -> 
         inst = load(source)
         name = inst.name
         lb0 = lower_bound(inst)
-        ub0, _ = upper_bound(inst)
+        ub0, _ = upper_bound(inst, time_limit=max(0.0, min(5.0, deadline - time.perf_counter())))
         if solve is None:
             solve = get_solve(cfg)
         res = solve(inst, cfg, lb0=lb0, ub0=ub0, deadline=deadline)
