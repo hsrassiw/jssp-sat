@@ -1,9 +1,108 @@
-"""Mô hình CP-SAT của OR-Tools (Người 2)."""
+"""Mô hình CP-SAT của OR-Tools."""
 from __future__ import annotations
 
-from src.common.instance import Instance
-from src.common.result import Config, Result
+import time
+from pathlib import Path
+from ortools.sat.python import cp_model
+
+from src.common.bounds import lower_bound, time_windows, upper_bound
+from src.common.data import load
+from src.common.instance import Instance, Schedule
+from src.common.result import FEAS, NOSOL, OPT, Config, Result
 
 
-def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -> Result:
-    raise NotImplementedError("Người 2: mô hình OR-Tools CP-SAT")
+def solve(
+    inst: Instance | str | Path,
+    cfg: Config | None = None,
+    *,
+    lb0: int | None = None,
+    ub0: int | None = None,
+    deadline: float | None = None,
+) -> Result:
+    
+    if cfg is None:
+        cfg = Config(method="CP", solver="cpsat")
+
+    if lb0 is None:
+        lb0 = lower_bound(inst)
+    if ub0 is None:
+        ub0, _ = upper_bound(inst)
+    if deadline is None:
+        deadline = time.perf_counter() + 60.0
+
+    res = Result.new(inst.name, cfg)
+    res.lb0 = lb0
+    res.ub0 = ub0
+
+    t_enc_start = time.perf_counter()
+
+    # Khởi tạo mô hình CP-SAT
+    model = cp_model.CpModel()
+    es, ls = time_windows(inst, ub0)
+
+    # 1. Biến quyết định (Start, End, Interval)
+    all_tasks: dict[tuple[int, int], tuple[cp_model.IntVar, cp_model.IntVar, cp_model.IntervalVar]] = {}
+    machine_intervals: dict[int, list[cp_model.IntervalVar]] = {m: [] for m in range(inst.n_machines)}
+
+    for j, k, op in inst.ops():
+        duration = op.duration
+        es_jk, ls_jk = es[j][k], ls[j][k]
+
+        start_var = model.NewIntVar(es_jk, ls_jk, f"start_{j}_{k}")
+        end_var = model.NewIntVar(es_jk + duration, ls_jk + duration, f"end_{j}_{k}")
+        interval_var = model.NewIntervalVar(start_var, duration, end_var, f"interval_{j}_{k}")
+
+        all_tasks[(j, k)] = (start_var, end_var, interval_var)
+        machine_intervals[op.machine].append(interval_var)
+
+    # 2. Ràng buộc thứ tự công đoạn trong từng Job (Precedence Constraints)
+    for j, job in enumerate(inst.jobs):
+        for k in range(len(job) - 1):
+            start_next, _, _ = all_tasks[(j, k + 1)]
+            _, end_curr, _ = all_tasks[(j, k)]
+            model.Add(start_next >= end_curr)
+
+    # 3. Ràng buộc không chồng lấp trên từng Máy (No-Overlap Constraints)
+    for m in range(inst.n_machines):
+        model.AddNoOverlap(machine_intervals[m])
+
+    # 4. Hàm mục tiêu: Tối thiểu hóa Makespan (Cmax)
+    makespan = model.NewIntVar(lb0, ub0, "makespan")
+    job_ends = [all_tasks[(j, len(inst.jobs[j]) - 1)][1] for j in range(inst.n_jobs)]
+    model.AddMaxEquality(makespan, job_ends)
+    model.Minimize(makespan)
+
+    res.encode_time_s = time.perf_counter() - t_enc_start
+
+    # 5. Cấu hình Solver & Giới hạn thời gian
+    solver = cp_model.CpSolver()
+    remaining_time = max(0.001, deadline - time.perf_counter())
+    solver.parameters.max_time_in_seconds = float(remaining_time)
+
+    res.n_calls = 1
+    t_solve_start = time.perf_counter()
+    status_code = solver.Solve(model)
+    res.solve_time_s = time.perf_counter() - t_solve_start
+
+    # 6. Trích xuất kết quả
+    if status_code in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        res.cmax = int(solver.ObjectiveValue())
+        if status_code == cp_model.OPTIMAL:
+            res.status = OPT
+            res.bound = res.cmax
+        else:
+            res.status = FEAS
+            res.bound = int(solver.BestObjectiveBound())
+
+        # Giải mã lịch biểu (Schedule)
+        schedule: Schedule = []
+        for j, job in enumerate(inst.jobs):
+            job_schedule = [solver.Value(all_tasks[(j, k)][0]) for k in range(len(job))]
+            schedule.append(job_schedule)
+        res.schedule = schedule
+    else:
+        res.status = NOSOL
+        res.cmax = None
+        res.bound = None
+
+    return res
