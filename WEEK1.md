@@ -29,15 +29,6 @@ Lệnh SAT cần trả OPT,55,55. UB mặc định mất khoảng 5 giây là c�
 python -c "from src.common.data import ft06; from src.common.bounds import upper_bound; from src.common.verify import verify; u,s=upper_bound(ft06()); print('UB:',u,'errors:',verify(ft06(),s))"
 ```
 
-## Trạng thái ngoài code
-
-- AWS: người dùng xác nhận đã có tài khoản.
-- License: người dùng xác nhận đã có, chưa xác định loại license và chưa kiểm tra Gurobi/CPLEX trên VM.
-- AWS Budget: chưa xác nhận đã tạo. Thiết lập qua Billing and Cost Management > Budgets: chọn monthly cost budget, nhập ngân sách do bạn quyết định, gửi actual-cost alerts ở 80% và 100%. Cảnh báo không tự dừng tài nguyên và dữ liệu chi phí có độ trễ.
-- Dựng VM/cài solver: tuần 2. Không có thay đổi AWS nào được thực hiện từ phiên này.
-- Checkpoint nhóm “2 phương pháp giải ft06=55”: mới xác nhận SAT E2. Hai SAT solver khác nhau vẫn không thay thế yêu cầu một phương pháp khác (ví dụ CP-SAT của Người 2).
-- Cần báo Người 1 khi ghép src/common; thống nhất format CSV hiện có và phần mở rộng metadata trong data/bks.csv.
-
 ## Chưa thuộc phạm vi tuần 1
 
 MILP Gurobi/CPLEX, script benchmark hàng loạt có resume, triển khai VM và chạy thực nghiệm chính thức. Các stub solver được giữ nguyên.

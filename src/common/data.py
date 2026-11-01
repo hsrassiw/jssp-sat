@@ -78,7 +78,7 @@ def read_instance(path: str | Path) -> Instance:
 
             if duration < 0:
                 raise ValueError(
-                    f"Job {j}, bước {k}: thời gian phải lớn hơn 0"
+                    f"Job {j}, bước {k}: thời gian phải lớn hơn hoặc bằng 0"
                 )
 
             row.append((machine, duration))
