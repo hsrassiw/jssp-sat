@@ -5,7 +5,7 @@ import argparse
 import sys
 import time
 
-from src.common.bounds import lower_bound, upper_bound
+from src.common.bounds_cache import DEFAULT_BOUNDS_FILE, load_bounds
 from src.common.data import load
 from src.common.instance import makespan
 from src.common.result import ERR, NA, OPT, Config, Result, append_csv
@@ -31,15 +31,14 @@ def get_solve(cfg: Config):
     return solve
 
 
-def run_one(source, cfg: Config, time_limit: float = TIME_LIMIT, solve=None) -> Result:
+def run_one(source, cfg: Config, time_limit: float = TIME_LIMIT, solve=None, *, bounds_file=DEFAULT_BOUNDS_FILE) -> Result:
     t0 = time.perf_counter()
     deadline = t0 + time_limit
     name = str(source)
     try:
         inst = load(source)
         name = inst.name
-        lb0 = lower_bound(inst)
-        ub0, _ = upper_bound(inst, time_limit=max(0.0, min(5.0, deadline - time.perf_counter())))
+        lb0, ub0 = load_bounds(inst, bounds_file)
         if solve is None:
             solve = get_solve(cfg)
         res = solve(inst, cfg, lb0=lb0, ub0=ub0, deadline=deadline)
@@ -94,10 +93,11 @@ def main() -> None:
     p.add_argument("--solver", default=NA)
     p.add_argument("--time-limit", type=float, default=TIME_LIMIT)
     p.add_argument("--csv", help="ghi thêm kết quả vào file CSV này")
+    p.add_argument("--bounds-file", default=DEFAULT_BOUNDS_FILE, help="File cận cố định đã chuẩn bị")
     args = p.parse_args()
 
     cfg = Config(args.method, args.encoding, args.strategy, args.solver)
-    res = run_one(args.instance, cfg, args.time_limit)
+    res = run_one(args.instance, cfg, args.time_limit, bounds_file=args.bounds_file)
     print(",".join(res.csv_row().values()))
     if args.csv:
         append_csv(args.csv, res)

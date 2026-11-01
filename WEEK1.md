@@ -8,8 +8,8 @@
 - LB = max(tổng thời gian từng job, tải từng máy).
 - ES = tổng tiền tố; LS = horizon - tổng hậu tố, đúng mục 3.2 paper.
 - UB: Algorithm 1, mục 3.1 paper được gửi (Nguyen et al., bản compiled 20/10/2026), bỏ công suất. Chọn đều ngẫu nhiên trong các job chưa xong, chèn sớm nhất kể cả khoảng trống giữa các bước, nhiều lượt trong 5 giây, giữ lịch tốt nhất.
-- seed=0 mặc định; trials=N là chế độ số lượt cố định dành cho test. Chế độ 5 giây có thể cho UB khác nhau giữa các máy/lần chạy dù cùng seed, do số lượt khác nhau. Trước benchmark chính thức, tuần 2 cần chốt/lưu một bộ lb0/ub0/lịch chung cho từng instance rồi dùng lại cho mọi phương pháp; chưa có cache chính thức trong bản tuần 1.
-- run.py chỉ thay dòng gọi upper_bound để thời gian tiền xử lý không chủ động vượt ngân sách còn lại. Tổng time_s vẫn bao gồm tiền xử lý.
+- seed=0 mặc định; trials=N là chế độ số lượt cố định dành cho test. Chế độ 5 giây có thể cho UB khác nhau giữa các máy/lần chạy dù cùng seed, do số lượt khác nhau. Đã bổ sung data/bounds.json và prepare_bounds: run.py chỉ đọc cận cố định. Xem BOUNDS_CACHE.md.
+- run.py đọc cận cố định; time_s không bao gồm greedy offline. Thời gian chuẩn bị lưu riêng trong cache.
 - Khung LaTeX cas-sc, có preview PDF; chưa viết kết quả nghiên cứu.
 
 ## Cách ghép vào repo đang clone
