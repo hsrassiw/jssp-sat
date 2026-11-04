@@ -11,14 +11,7 @@ from src.common.instance import Instance, Schedule
 from src.common.result import FEAS, NOSOL, OPT, Config, Result
 
 
-def solve(
-    inst: Instance | str | Path,
-    cfg: Config | None = None,
-    *,
-    lb0: int | None = None,
-    ub0: int | None = None,
-    deadline: float | None = None,
-) -> Result:
+def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -> Result:
     
     if cfg is None:
         cfg = Config(method="CP", solver="cpsat")
@@ -38,6 +31,7 @@ def solve(
 
     # Khởi tạo mô hình CP-SAT
     model = cp_model.CpModel()
+    solver.parameters.num_workers = 1
     es, ls = time_windows(inst, ub0)
 
     # 1. Biến quyết định (Start, End, Interval)

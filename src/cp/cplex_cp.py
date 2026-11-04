@@ -12,17 +12,7 @@ from src.common.instance import Instance, Schedule
 from src.common.result import FEAS, NOSOL, OPT, Config, Result
 
 
-def solve(
-    inst: Instance | str | Path,
-    cfg: Config | None = None,
-    *,
-    lb0: int | None = None,
-    ub0: int | None = None,
-    deadline: float | None = None,
-) -> Result:
-    
-    if isinstance(inst, (str, Path)):
-        inst = load(inst)
+def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -> Result:
 
     if cfg is None:
         cfg = Config(method="CP", solver="cplex")
@@ -42,7 +32,8 @@ def solve(
 
     # Khởi tạo mô hình CPLEX CP
     mdl = CpoModel(name=inst.name)
-    cp_path = "/opt/ibm/ILOG/CPLEX_Studio222/cpoptimizer/bin/x86-64_linux/cpoptimizer"
+    threads = 1
+    #cp_path = "/opt/ibm/ILOG/CPLEX_Studio222/cpoptimizer/bin/x86-64_linux/cpoptimizer"
     es, ls = time_windows(inst, ub0)
 
     # 1. Biến khoảng thời gian (Interval Variables)
