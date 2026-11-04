@@ -189,7 +189,7 @@ def main():
     p.add_argument('--csv',type=Path,default=Path('results/batch.csv'))
     p.add_argument('--bounds-file',type=Path,default=DEFAULT_BOUNDS_FILE)
     p.add_argument('--time-limit',type=float,default=600)
-    p.add_argument('--cpsat-reference',action='store_true',help='Dùng optional/cpsat_reference.py thay cho adapter Quang')
+    p.add_argument('--cpsat-reference',action='store_true',help='Dùng optional/cpsat_reference.py thay cho adapter chính')
     a=p.parse_args();configs=[]
     for method in dict.fromkeys(a.methods):
         if method=='SAT':

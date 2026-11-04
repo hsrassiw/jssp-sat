@@ -1,89 +1,87 @@
-# Tạo VM và cài solver đầy đủ
+# EC2 Windows cho thực nghiệm JSSP
 
-Chưa có VM được triển khai tự động từ gói này. Cần thao tác trong tài khoản AWS của Lâm và bộ cài CPLEX Studio Linux x86-64 được cấp phép.
+Môi trường mục tiêu: Windows Server 2025 Base, x86-64, EC2 r6i.xlarge (4 vCPU, 32 GiB RAM). Mỗi solver chạy 1 luồng, mỗi cấu hình tối đa 600 giây, chạy tuần tự trên cùng VM. Ghi lại AMI, phiên bản Windows/Python/solver và commit thực tế trong báo cáo.
 
-## 1. Tạo máy
+VM được tạo thủ công trong AWS Console. Không cần triển khai CloudFormation cho máy đã có. Template Ubuntu cũ `ec2-jssp.yaml` được loại bỏ bằng `scripts/cleanup_obsolete.ps1`.
 
-AWS CloudFormation > Create stack > With new resources > Upload a template file > chọn `infra/ec2-jssp.yaml`.
-Điền AMI Ubuntu Server 24.04 LTS x86_64 của region đang chọn, VPC, public subnet cùng VPC, key pair đã có và IPv4 của bạn dạng a.b.c.d/32. Template tạo r6i.xlarge (4 vCPU, 32 GiB), EBS gp3 40 GiB mã hóa, public IP và security group chỉ mở SSH từ IP đó. Đây là tài nguyên trả phí; xem giá ở region trước khi Create stack. Không có IAM role/quyền AWS cho VM.
+## Kết nối và cài đặt
 
-Khi stack CREATE_COMPLETE, lấy PublicIp ở Outputs. SSH từ PowerShell (thay đường dẫn key và địa chỉ thực tế):
+1. Trong EC2 Console, chọn instance đang Running, dùng Connect > RDP client để lấy thông tin kết nối Windows. Security group cho phép TCP 3389 từ IP của người thực hiện.
+2. Trên VM, cài Git và Python 64-bit. Python 3.12 là môi trường kiểm thử ban đầu. Clone repo nhóm; không chép `.venv` từ laptop sang VM.
+3. Cài CPLEX Optimization Studio 22.2.0 bản Windows đầy đủ bằng bộ cài được cấp phép. Ghi lại thư mục gốc chứa cả `cplex` và `cpoptimizer`. Không dùng bộ cài Linux `.bin`.
+4. Trong PowerShell ở thư mục repo, chạy lệnh sau. Thay đường dẫn ví dụ bằng thư mục Studio thực tế trên EC2 (thư mục chứa cả `cplex` và `cpoptimizer`):
 
 ```powershell
-ssh -i "D:\keys\jssp.pem" ubuntu@PUBLIC_IP
+powershell -ExecutionPolicy Bypass -File .\setup.ps1 -CplexStudioDir "C:\Program Files\IBM\ILOG\CPLEX_Studio2220"
 ```
 
-UserData cài Python/git/tmux. Trên VM chờ xong:
+Script tạo môi trường mới bằng Python 3.12 nếu chưa có `.venv`, cài `requirements.txt` rồi nâng cấp runtime CPLEX. Gurobi và CPLEX phải được kiểm tra trong chính `.venv` dùng để chạy thực nghiệm. Đường dẫn cài trên laptop không tự tồn tại trên EC2.
 
-```bash
-sudo cloud-init status --wait
-python3.12 --version
+## Gurobi WLS
+
+Chép `gurobi.lic` vào `%USERPROFILE%` trên VM. Không commit file này. Nếu để nơi khác, đặt `GRB_LICENSE_FILE` tới đường dẫn file đó. WLS cần Internet. Kiểm tra:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/check_solvers.py --full --solvers gurobi
 ```
 
-Clone repo nhóm (dùng URL thật), cd repo và chép gói cập nhật. Chạy `bash setup.sh`. Không cần cổng HTTP, RDS hay NAT Gateway cho bài này.
+## CPLEX MIP và CP Optimizer
 
-## 2. Gurobi
+`pip install cplex` cung cấp runtime Community. `setup.ps1 -CplexStudioDir ...` gọi `docplex config --upgrade` để sử dụng runtime Studio đã cài, rồi thử bài MIP 1101 biến. Có phiên bản trong banner không đủ chứng minh đã hết giới hạn.
 
-Copy license WLS của chính bạn vào `~/gurobi.lic` trên VM, hoặc đặt biến `GRB_LICENSE_FILE` là đường dẫn tuyệt đối. WLS cần mạng; license gắn máy cũ không tự trở thành license cho VM. Không đưa license vào Git.
+CPLEX MIP dùng package `cplex`. CPLEX CP dùng `docplex.cp` và `cpoptimizer.exe`. Script thêm `<Studio>\cpoptimizer\bin\x64_win64` vào PATH của tài khoản hiện tại nếu file tồn tại. Mở lại PowerShell/VS Code sau khi chạy script.
 
-```bash
-chmod 600 ~/gurobi.lic
-source .venv/bin/activate
-python scripts/check_solvers.py --full --solvers gurobi
+Kiểm tra CP Optimizer độc lập với adapter JSSP:
+
+```powershell
+Get-Command cpoptimizer.exe
+.\.venv\Scripts\python.exe -c "from docplex.cp.model import CpoModel; m=CpoModel(); x=m.integer_var(0,1); m.add(x==1); s=m.solve(Workers=1,TimeLimit=10); assert s.is_solution(); print('CP Optimizer OK')"
 ```
 
-`--full` thử 2101 biến để phát hiện runtime giới hạn kích thước, không chỉ import/khởi tạo Model.
+Adapter `src/cp/cplex_cp.py` của nhóm phải dùng executable tìm qua PATH hoặc cấu hình theo máy; không gán cứng đường dẫn ổ D của một thành viên. Nếu adapter còn stub thì phải ghép phần triển khai của nhóm trước khi chạy JSSP bằng CPLEX CP. Bài kiểm tra CP nhỏ ở trên chỉ xác nhận kết nối engine.
 
-## 3. CPLEX đầy đủ
+Kiểm tra runtime CPLEX MIP đầy đủ và thử adapter JSSP:
 
-Tải IBM ILOG CPLEX Optimization Studio Linux x86-64 bản đầy đủ từ tài khoản academic/entitlement của bạn, chép `.bin` lên VM. Chạy bộ cài và chọn thư mục cài đặt:
-
-```bash
-bash TEN_BO_CAI.linux_x86_64.bin -i console
+```powershell
+.\.venv\Scripts\python.exe scripts/check_solvers.py --full --solvers cplex
+.\.venv\Scripts\python.exe -m src.common.run la21 --method MIP --solver cplex --time-limit 30
+# Chỉ chạy sau khi đã ghép adapter CPLEX CP của nhóm.
+.\.venv\Scripts\python.exe -m src.common.run la21 --method CP --solver cplex --time-limit 30
 ```
 
-Với CPLEX 22.1.2 trở lên, Python API được cài qua pip rồi nâng cấp runtime bằng bộ Studio đầy đủ (IBM đã thay đổi quy trình; hướng dẫn không dùng pip trong kế hoạch cũ không còn áp dụng nguyên văn). Dùng phiên bản package KHỚP Studio. Ví dụ nếu cài Studio 22.2.0:
+FEAS/NOSOL do hết thời gian không tự chứng minh lỗi license. Nếu ERR, đọc log để xác định lỗi; lỗi giới hạn kích thước cho thấy runtime chưa đáp ứng yêu cầu. Không cài lại package `cplex` sau khi nâng cấp runtime; nếu phải cài lại, chạy lại bước nâng cấp và kiểm tra.
 
-```bash
-source .venv/bin/activate
-python -m pip install 'cplex==22.2.0.1' docplex setuptools
-# Thay đường dẫn dưới bằng thư mục Studio bạn đã cài thực tế.
-docplex config --upgrade /DUONG_DAN/CPLEX_Studio2220
-python scripts/check_solvers.py --full --solvers cplex
+## Chạy và kết thúc phiên
+
+Trước tiên thử batch E2 và CP-SAT trên `ft06` trong 30 giây mỗi cấu hình:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.common.batch --instances ft06 --methods SAT CP --encodings E2 --cp-solvers cpsat --time-limit 30 --csv results/smoke.csv
 ```
 
-Hoặc đặt `CPLEX_STUDIO_DIR` và `CPLEX_PY_VERSION` rồi chạy lại setup.sh. Không chạy pip reinstall cplex sau upgrade vì có thể thay lại runtime Community.
+Nếu adapter CP-SAT của nhóm chưa được ghép, thêm `--cpsat-reference` để thử bằng adapter tham chiếu. Kết quả này là kiểm thử; không trộn với CSV thực nghiệm chính thức.
 
-Nếu dùng Studio cũ có thư mục cplex/python/VERSION/PLATFORM, dùng API và Python tương thích theo tài liệu bản đó; không dùng lệnh version 22.2.0.1 ở trên.
+Sau khi các adapter và solver đều hoạt động, ví dụ chạy E2, CP-SAT, CPLEX CP, Gurobi MIP và CPLEX MIP trên ba instance:
 
-Để CP Optimizer của Quang tìm executable, thêm thư mục thực tế vào PATH, không sửa đường dẫn máy cá nhân vào code:
-
-```bash
-export PATH="/DUONG_DAN/CPLEX_Studio2220/cpoptimizer/bin/x86-64_linux:$PATH"
-command -v cpoptimizer
+```powershell
+.\.venv\Scripts\python.exe -m src.common.batch --instances ft06 la01 la02 --methods SAT CP MIP --encodings E2 --cp-solvers cpsat cplex --mip-solvers gurobi cplex --time-limit 600 --csv results/aws.csv
 ```
 
-Kiểm tra bản đầy đủ bằng bài lớn:
+Danh sách ba instance trên chỉ là ví dụ; thay bằng danh sách đã thống nhất trong kế hoạch. Dùng cùng commit, dependency và bộ cận. Chạy lại đúng lệnh và CSV sẽ bỏ qua task hoàn tất theo cơ chế resume; không đổi cấu hình hay mã nguồn giữa một lượt resume. Nếu thay đổi, dùng tên CSV mới.
 
-```bash
-python -m src.common.run la21 --method MIP --solver cplex --time-limit 30
-python -m src.common.run la21 --method CP --solver cplex --time-limit 30
-```
+Giữ thư mục `results` gồm CSV, manifest và logs để đối chiếu. Không chạy nhiều batch cùng lúc hoặc tác vụ nặng khác trên VM khi đo.
 
-FEAS/NOSOL do hết 30 giây không đồng nghĩa lỗi license. ERR có lỗi giới hạn kích thước thì runtime chưa được nâng cấp đúng. Lệnh CP chỉ chạy sau khi ghép adapter của Quang.
+Chạy batch trong PowerShell trên EC2, dùng cùng `data/bounds.json` đã chốt. Không tính lại cận giữa các phương pháp. Disconnect RDP khi cần rời máy; không Sign out hoặc Stop khi đang chạy. Kết quả hoàn tất được ghi sau từng task. Sau khi chạy xong, lưu kết quả rồi Stop instance trong AWS Console. Khi Start lại, kiểm tra public IP mới để kết nối; dữ liệu đã lưu trên EBS được giữ lại.
 
-## 4. Thực nghiệm
+## Nội dung cập nhật trong kế hoạch tuần 2
 
-Dùng cùng một commit, cùng data/bounds.json đã chốt và một VM. Batch mặc định chạy tuần tự, mỗi solver đặt 1 luồng. Dùng tmux để SSH ngắt không giết batch. Không chạy tác vụ khác trên VM trong lúc đo.
+- Tạo VM Windows Server 2025 Base r6i.xlarge và cài CPLEX Optimization Studio 22.2.0 bằng bộ cài Windows đầy đủ.
+- Cấu hình Python CPLEX MIP bằng runtime Studio; cấu hình DOcplex CP tìm `cpoptimizer.exe` qua PATH. Kiểm thử trước khi thực nghiệm chính thức.
 
-```bash
-tmux new -s jssp
-python -m src.common.batch --instances ft06 la01 la02 --methods SAT CP MIP --csv results/aws.csv
-```
+Đây là hướng dẫn cấu hình; không phải bằng chứng đã cài hoặc chạy thành công trên VM.
 
-Sau khi tải đủ CSV, manifest và logs về, stop VM nếu cần dùng lại; EBS vẫn có phí. Chỉ delete stack sau khi đã sao lưu vì EBS sẽ bị xóa khi terminate.
+## Tài liệu tham khảo
 
-Nguồn chính thức:
-- https://aws.amazon.com/ec2/instance-types/r6i/
-- https://www.ibm.com/docs/en/icos/22.1.2?topic=rnco2-cplex-python-api-now-installed-using-pip-conda
-- https://www.ibm.com/docs/en/icos/22.1.1?topic=cplex-setting-up-python-api
+- IBM Academic / SkillsBuild: https://academic.ibm.com/a2mt/
+- CPLEX Python API và nâng cấp runtime: https://www.ibm.com/docs/en/icos/22.1.2?topic=rnco2-cplex-python-api-now-installed-using-pip-conda
+- Cấu hình DOcplex CP: https://ibmdecisionoptimization.github.io/docplex-doc/cp/_modules/docplex/cp/config.html
