@@ -37,7 +37,14 @@ def test_err_retried_and_partial_resume(tmp_path,monkeypatch):
 def test_watchdog_terminates_child(tmp_path,monkeypatch):
     import subprocess,time
     original=subprocess.Popen
-    def sleeper(args,**kw):return original([sys.executable,'-c','import time;time.sleep(60)'],**kw)
+    def sleeper(args, **kw):
+    # Chỉ giả lập worker; để taskkill chạy bình thường.
+        if isinstance(args, (list, tuple)) and "src.common.batch_worker" in args:
+            return original(
+                [sys.executable, "-c", "import time; time.sleep(60)"],
+                **kw,
+            )
+        return original(args, **kw)
     monkeypatch.setattr('src.common.batch.subprocess.Popen',sleeper)
     t0=time.perf_counter()
     res=execute('ft06',Config('CP',solver='cpsat'),bounds_file=DEFAULT_BOUNDS_FILE,time_limit=.2,log_path=tmp_path/'timeout.log')
