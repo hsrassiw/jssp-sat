@@ -49,3 +49,7 @@ def solve(inst, cfg, *, lb0, ub0, deadline) -> Result
 Encoding SAT thì kế thừa `SatEncoding` trong `src/sat/base.py`.
 
 Các cột CSV giống mục 5 trong file kế hoạch, cột nào không dùng thì ghi `-`.
+
+## Cận cố định
+
+`run.py` đọc `data/bounds.json`. Tạo cận bằng `python -m src.common.prepare_bounds` trước khi chạy nếu chưa có. Lệnh bỏ qua bài đã có; chỉ `--overwrite` mới tính lại. Xem `BOUNDS_CACHE.md` về quy ước thời gian mới.

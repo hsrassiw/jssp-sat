@@ -1,6 +1,8 @@
 """Kiểm tra lịch có hợp lệ không."""
 from __future__ import annotations
 
+from numbers import Integral
+
 from src.common.instance import Instance, Schedule
 
 
@@ -13,6 +15,13 @@ def verify(inst: Instance, start: Schedule) -> list[str]:
     for j in range(inst.n_jobs):
         if len(start[j]) != len(inst.jobs[j]):
             return [f"sai số bước của job {j} trong lịch"]
+
+    for j, row in enumerate(start):
+        for k, value in enumerate(row):
+            if isinstance(value, bool) or not isinstance(value, Integral):
+                errors.append(f"bước ({j},{k}): thời điểm phải là số nguyên")
+    if errors:
+        return errors
 
     # thứ tự trong job
     for j, k, op in inst.ops():
