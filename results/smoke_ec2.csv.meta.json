@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "source_sha256": "5e6ac1c842b2ac9404002bb53100ce75089c512aa582875f24ec59ba06c8e810",
+  "bounds_sha256": "22751b464731f8f8b7da4e6e09065ac3a597a9d789d6aa9085ced16753dce936",
+  "instances": {
+    "ft06": "763d149197e98ff33797906d712ebf95e65d1945a7776a1dc5c2cdcfe3b3f7f3"
+  },
+  "configs": [
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "CP",
+      "encoding": "-",
+      "strategy": "-",
+      "solver": "cpsat"
+    }
+  ],
+  "time_limit": 600,
+  "cpsat_reference": true,
+  "python": "3.14.6",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "machine": "Nala",
+  "versions": {
+    "python-sat": "1.9.dev17",
+    "ortools": null,
+    "gurobipy": null,
+    "cplex": null,
+    "docplex": null
+  },
+  "timing": "worker read+cache+build+solve; watchdog includes process startup; greedy excluded"
+}

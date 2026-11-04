@@ -15,4 +15,4 @@ xelatex -interaction=nonstopmode -halt-on-error main.tex
 xelatex -interaction=nonstopmode -halt-on-error main.tex
 ```
 
-Đây là KHUNG, chưa phải báo cáo hoàn chỉnh. Các đoạn [Cần bổ sung] chỉ rõ phần của từng người. Không có số liệu thực nghiệm AWS giả định. main.pdf là bản xem trước đã biên dịch.
+Đây là KHUNG, chưa phải báo cáo hoàn chỉnh. Các đoạn [Cần bổ sung] chỉ rõ phần của từng người. Không có số liệu thực nghiệm AWS giả định. PDF được sinh khi biên dịch, không lưu sẵn trong gói cập nhật.

@@ -1,0 +1,3 @@
+instance,method,encoding,strategy,solver,status,cmax,bound,lb0,ub0,time_s,encode_time_s,solve_time_s,n_vars,n_clauses,n_calls
+ft06,SAT,E2,incremental,cadical,OPT,55,55,47,55,0.039,0.002,0.005,1704,6854,2
+ft06,CP,-,-,cpsat,ERR,,,47,55,0.012,0.000,0.000,0,0,0
