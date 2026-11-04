@@ -1,3 +1,6 @@
 python-sat>=1.8.dev0
-pytest
-# Người 2: ortools, docplex · Người 3: gurobipy (CPLEX cài từ bộ cài đầy đủ, xem kế hoạch)
+pytest>=8
+ortools==9.15.6755
+gurobipy==13.0.3
+docplex>=2.30
+cplex==22.2.0.0
