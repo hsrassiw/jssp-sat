@@ -31,7 +31,6 @@ def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -
 
     # Khởi tạo mô hình CP-SAT
     model = cp_model.CpModel()
-    solver.parameters.num_workers = 1
     es, ls = time_windows(inst, ub0)
 
     # 1. Biến quyết định (Start, End, Interval)
@@ -70,6 +69,7 @@ def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -
 
     # 5. Cấu hình Solver & Giới hạn thời gian
     solver = cp_model.CpSolver()
+    solver.parameters.num_workers = 1
     remaining_time = max(0.001, deadline - time.perf_counter())
     solver.parameters.max_time_in_seconds = float(remaining_time)
 

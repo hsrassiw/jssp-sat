@@ -32,7 +32,6 @@ def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -
 
     # Khởi tạo mô hình CPLEX CP
     mdl = CpoModel(name=inst.name)
-    threads = 1
     #cp_path = "/opt/ibm/ILOG/CPLEX_Studio222/cpoptimizer/bin/x86-64_linux/cpoptimizer"
     es, ls = time_windows(inst, ub0)
 
@@ -76,7 +75,8 @@ def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -
     t_solve_start = time.perf_counter()
     sol = mdl.solve(
         TimeLimit=remaining_time,
-        LogVerbosity="Quiet"
+        LogVerbosity="Quiet",
+        Workers=1
     )
     res.solve_time_s = time.perf_counter() - t_solve_start
 
