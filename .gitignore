@@ -6,7 +6,7 @@ venv/
 .idea/
 .vscode/
 *.log
-
+.venv
 
 # Paper, kế hoạch nhóm
 docs/*.pdf

@@ -56,7 +56,7 @@ def test_watchdog_terminates_child(tmp_path,monkeypatch):
 def test_batch_real_e2_cpsat(tmp_path):
     pytest.importorskip('ortools');pytest.importorskip('pysat')
     configs=[Config('SAT','E2','incremental','cadical'),Config('CP',solver='cpsat')]
-    rows=run_batch(['ft06'],configs,csv_path=tmp_path/'smoke.csv',time_limit=20,cpsat_reference=True)
+    rows=run_batch(['ft06'],configs,csv_path=tmp_path/'smoke.csv',time_limit=20)
     assert len(rows)==2
     assert all(r['status']=='OPT' and r['cmax']=='55' for r in rows)
     assert len({(r['lb0'],r['ub0']) for r in rows})==1

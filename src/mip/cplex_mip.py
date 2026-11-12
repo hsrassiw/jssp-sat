@@ -23,7 +23,7 @@ def solve(inst, cfg, *, lb0, ub0, deadline):
         model.variables.add(obj=obj,lb=f.lbs,ub=f.ubs,types=''.join(f.types),names=f.names)
         model.linear_constraints.add(lin_expr=[cplex.SparsePair(ind=i,val=v) for i,v,_ in f.rows],
                                      senses='G'*len(f.rows),rhs=[r for _,_,r in f.rows])
-        res.n_vars=model.variables.get_num();res.n_clauses=model.linear_constraints.get_num()
+        res.n_vars=model.variables.get_num();res.n_clauses=model.linear_constraints.get_num();res.n_calls=1
         res.encode_time_s=time.perf_counter()-t0
         remaining=deadline-time.perf_counter()
         if remaining<=0:return res

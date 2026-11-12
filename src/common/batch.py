@@ -73,9 +73,8 @@ def save_rows(path,rows):
     w.writeheader();w.writerows(rows);atomic_text(path,buf.getvalue())
 
 
-def fingerprint(sources,configs,bounds_file,time_limit,cpsat_reference):
+def fingerprint(sources,configs,bounds_file,time_limit):
     files=sorted((ROOT/'src').rglob('*.py'))
-    if cpsat_reference:files+=sorted((ROOT/'optional').glob('*.py'))
     digest=hashlib.sha256()
     for p in files:
         digest.update(str(p.relative_to(ROOT)).encode());digest.update(p.read_bytes())
@@ -87,7 +86,7 @@ def fingerprint(sources,configs,bounds_file,time_limit,cpsat_reference):
                 bounds_sha256=hashlib.sha256(bounds_file.read_bytes()).hexdigest(),
                 instances={load(s).name:instance_hash(load(s)) for s in sources},
                 configs=[asdict(c) for c in configs],time_limit=time_limit,
-                cpsat_reference=cpsat_reference,python=platform.python_version(),
+                python=platform.python_version(),
                 platform=platform.platform(),machine=platform.node(),versions=versions,
                 timing='worker read+cache+build+solve; watchdog includes process startup; greedy excluded')
 
@@ -113,14 +112,14 @@ def stop_process(proc):
     proc.wait()
 
 
-def execute(source,cfg,*,bounds_file,time_limit,log_path,cpsat_reference=False):
+def execute(source,cfg,*,bounds_file,time_limit,log_path):
     inst=load(source);lb,ub=load_bounds(inst,bounds_file)
     res=Result.new(inst.name,cfg);res.lb0=lb;res.ub0=ub;res.bound=lb
     t0=time.perf_counter()
     with tempfile.TemporaryDirectory(prefix='jssp-worker-') as directory:
         request=Path(directory)/'request.json';output=Path(directory)/'result.json'
         request.write_text(json.dumps(dict(source=str(source),config=asdict(cfg),bounds_file=str(bounds_file),
-            deadline=t0+time_limit-min(1.0,time_limit*0.05),cpsat_reference=cpsat_reference)),encoding='utf-8')
+            deadline=t0+time_limit-min(1.0,time_limit*0.05))),encoding='utf-8')
         log_path.parent.mkdir(parents=True,exist_ok=True)
         with log_path.open('w',encoding='utf-8') as log:
             proc=subprocess.Popen([sys.executable,'-m','src.common.batch_worker','--request',str(request),'--output',str(output)],
@@ -152,7 +151,7 @@ def execute(source,cfg,*,bounds_file,time_limit,log_path,cpsat_reference=False):
     return res
 
 
-def run_batch(sources,configs,*,csv_path,bounds_file=DEFAULT_BOUNDS_FILE,time_limit=600,cpsat_reference=False):
+def run_batch(sources,configs,*,csv_path,bounds_file=DEFAULT_BOUNDS_FILE,time_limit=600):
     if not math.isfinite(time_limit) or time_limit<=0:raise ValueError('time-limit phải hữu hạn và >0')
     csv_path=Path(csv_path).resolve();bounds_file=Path(bounds_file).resolve()
     sources=[str(Path(s).resolve()) if Path(s).exists() else str(s) for s in sources]
@@ -160,7 +159,7 @@ def run_batch(sources,configs,*,csv_path,bounds_file=DEFAULT_BOUNDS_FILE,time_li
     if len(names)!=len(set(names)):raise ValueError('Danh sách instance trùng tên')
     for s in sources:load_bounds(load(s),bounds_file)  # lỗi cận: dừng trước khi chạy
     with csv_lock(csv_path):
-        guard_manifest(csv_path,fingerprint(sources,configs,bounds_file,time_limit,cpsat_reference))
+        guard_manifest(csv_path,fingerprint(sources,configs,bounds_file,time_limit))
         rows=read_rows(csv_path)
         latest={tuple(r[k] for k in KEY_COLUMNS):r for r in rows}
         for source in sources:
@@ -170,7 +169,7 @@ def run_batch(sources,configs,*,csv_path,bounds_file=DEFAULT_BOUNDS_FILE,time_li
                     print('SKIP',key,flush=True);continue
                 label=hashlib.sha256(repr(key).encode()).hexdigest()[:16]
                 log=csv_path.parent/(csv_path.stem+'_logs')/(label+'.log')
-                res=execute(source,cfg,bounds_file=bounds_file,time_limit=time_limit,log_path=log,cpsat_reference=cpsat_reference)
+                res=execute(source,cfg,bounds_file=bounds_file,time_limit=time_limit,log_path=log)
                 row=res.csv_row();rows.append(row);latest[key]=row
                 save_rows(csv_path,rows)
                 print(f'{res.instance} {cfg.key()} {res.status} cmax={res.cmax} bound={res.bound}',flush=True)
@@ -189,7 +188,6 @@ def main():
     p.add_argument('--csv',type=Path,default=Path('results/batch.csv'))
     p.add_argument('--bounds-file',type=Path,default=DEFAULT_BOUNDS_FILE)
     p.add_argument('--time-limit',type=float,default=600)
-    p.add_argument('--cpsat-reference',action='store_true',help='Dùng optional/cpsat_reference.py thay cho adapter chính')
     a=p.parse_args();configs=[]
     for method in dict.fromkeys(a.methods):
         if method=='SAT':
@@ -200,7 +198,7 @@ def main():
             for solver in a.cp_solvers if method=='CP' else a.mip_solvers:
                 configs.append(Config(method,solver=solver))
     configs=list(dict.fromkeys(configs))
-    try:run_batch(a.instances,configs,csv_path=a.csv,bounds_file=a.bounds_file,time_limit=a.time_limit,cpsat_reference=a.cpsat_reference)
+    try:run_batch(a.instances,configs,csv_path=a.csv,bounds_file=a.bounds_file,time_limit=a.time_limit)
     except (ValueError,OSError) as exc:p.exit(2,f'{exc}\n')
 
 

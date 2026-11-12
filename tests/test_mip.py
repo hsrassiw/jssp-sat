@@ -45,11 +45,3 @@ def test_mip_matches_exhaustive_small(rows):
     for name in ['gurobi','cplex']:
         result=solver(name)(inst,Config('MIP',solver=name),lb0=lower_bound(inst),ub0=h,deadline=time.perf_counter()+10)
         assert result.status==OPT and result.cmax==optimum
-
-
-def test_reference_cpsat_ft06():
-    pytest.importorskip('ortools')
-    from optional.cpsat_reference import solve
-    res=solve(ft06(),Config('CP',solver='cpsat'),lb0=47,ub0=197,deadline=time.perf_counter()+20)
-    assert res.status==OPT and res.bound==res.cmax==55
-    assert verify(ft06(),res.schedule)==[]

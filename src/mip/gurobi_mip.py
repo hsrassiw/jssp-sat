@@ -24,7 +24,7 @@ def solve(inst, cfg, *, lb0, ub0, deadline):
                 model.addConstr(gp.LinExpr(coefficients,[variables[i] for i in indices])>=rhs)
             model.setObjective(variables[f.cmax],GRB.MINIMIZE)
             model.update()
-            res.n_vars=model.NumVars;res.n_clauses=model.NumConstrs
+            res.n_vars=model.NumVars;res.n_clauses=model.NumConstrs;res.n_calls=1
             res.encode_time_s=time.perf_counter()-t0
             remaining=deadline-time.perf_counter()
             if remaining<=0:return res

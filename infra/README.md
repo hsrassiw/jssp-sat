@@ -59,8 +59,6 @@ Trước tiên thử batch E2 và CP-SAT trên `ft06` trong 30 giây mỗi cấu
 .\.venv\Scripts\python.exe -m src.common.batch --instances ft06 --methods SAT CP --encodings E2 --cp-solvers cpsat --time-limit 30 --csv results/smoke.csv
 ```
 
-Nếu adapter CP-SAT của nhóm chưa được ghép, thêm `--cpsat-reference` để thử bằng adapter tham chiếu. Kết quả này là kiểm thử; không trộn với CSV thực nghiệm chính thức.
-
 Sau khi các adapter và solver đều hoạt động, ví dụ chạy E2, CP-SAT, CPLEX CP, Gurobi MIP và CPLEX MIP trên ba instance:
 
 ```powershell
