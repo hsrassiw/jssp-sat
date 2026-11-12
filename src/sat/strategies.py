@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import threading
 import time
+from functools import partial
 
 from pysat.solvers import Solver
 
@@ -26,6 +27,9 @@ def get_encoding(name: str) -> type[SatEncoding]:
     if name == "E2":
         from src.sat.e2_order import E2Order
         return E2Order
+    if name.startswith("E3-"):
+        from src.sat.e3_amo import E3Amo
+        return partial(E3Amo, amo=name[3:])
     raise ValueError(f"không có encoding {name}")
 
 
