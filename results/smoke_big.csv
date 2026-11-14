@@ -1,0 +1,3 @@
+instance,method,encoding,strategy,solver,status,cmax,bound,lb0,ub0,time_s,encode_time_s,solve_time_s,n_vars,n_clauses,n_calls
+ta41,SAT,E1,incremental,cadical,FEAS,2524,1830,1830,2694,612.953,56.464,439.156,3251970,52321959,172
+ta41,SAT,E2,incremental,cadical,FEAS,2629,1830,1830,2694,602.047,35.243,525.967,1983440,28311250,66
