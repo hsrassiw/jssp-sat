@@ -37,6 +37,16 @@ CONFLICT_BUDGET = 10000
 FIRST_BUDGET = 100
 CMS_SECONDS = 2.0
 
+# batch_worker gán hàm này để ghi kết quả tạm ra file.
+# CaDiCaL có lúc chạy vài phút không dừng được, nếu worker bị watchdog giết
+# thì batch vẫn lấy được lịch tốt nhất đã tìm thấy.
+save_progress = None
+
+
+def _save_progress(res: Result) -> None:
+    if save_progress is not None:
+        save_progress(res)
+
 
 def _supports_interrupt(solver: Solver) -> bool:
     try:
@@ -166,6 +176,7 @@ def _solve_incremental(
             c = makespan(inst, sched)
             res.schedule = sched
             res.cmax = c
+            _save_progress(res)
 
             if c <= lb0:
                 res.bound = c
@@ -199,6 +210,7 @@ class _Fresh:
         res = self.res
         if time.perf_counter() >= self.deadline:
             return None
+        _save_progress(res)  # lưu lịch và cận của các lần trước
         t_enc = time.perf_counter()
         enc = self.encoding_cls(self.inst, c)
         res.encode_time_s += time.perf_counter() - t_enc

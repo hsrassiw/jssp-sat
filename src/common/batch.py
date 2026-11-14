@@ -18,7 +18,8 @@ from dataclasses import asdict
 from pathlib import Path
 from src.common.bounds_cache import DEFAULT_BOUNDS_FILE, instance_hash, load_bounds
 from src.common.data import load
-from src.common.result import CSV_COLUMNS, Config, Result, ERR, NOSOL
+from src.common.batch_worker import partial_path
+from src.common.result import CSV_COLUMNS, Config, Result, ERR, FEAS, NOSOL
 from src.common.run import _check
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -133,6 +134,14 @@ def execute(source,cfg,*,bounds_file,time_limit,log_path):
             except subprocess.TimeoutExpired:
                 stop_process(proc);res.status=NOSOL
                 res.note='Watchdog hết giờ: chưa nhận kết quả worker; không lấy lịch UB làm nghiệm.'
+                partial=partial_path(output)
+                if partial.exists():
+                    # SAT bị giết giữa chừng: lấy lịch và cận tốt nhất worker đã ghi tạm trước deadline
+                    res=Result(**json.loads(partial.read_text(encoding='utf-8')))
+                    res.lb0=lb;res.ub0=ub;res.time_s=time_limit
+                    res.status=FEAS if res.schedule else NOSOL
+                    res.note='Watchdog hết giờ: lấy kết quả tạm worker đã ghi.'
+                    _check(inst,res)
             except BaseException:
                 stop_process(proc);raise
             else:
