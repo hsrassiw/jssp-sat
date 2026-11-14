@@ -1,4 +1,4 @@
-"""Encoding E3: chỉ dùng biến S như E2, ràng buộc máy bằng AMO qua CardEnc của PySAT.
+"""Encoding E3: chỉ dùng biến S như E2, ràng buộc máy bằng AMO.
 
 S[i, t]: bước i bắt đầu lúc >= t
 R[i, t]: bước i đang chạy tại t
@@ -9,14 +9,22 @@ from __future__ import annotations
 from pysat.card import CardEnc, EncType
 
 from src.common.instance import Instance, Schedule
+from src.sat import amo
 from src.sat.base import Clause, SatEncoding
 
-AMO_TYPES = {
+# 4 kiểu có sẵn trong CardEnc của PySAT (bitwise chính là binary)
+PYSAT_AMO = {
     "pairwise": EncType.pairwise,
     "seqcounter": EncType.seqcounter,
     "bitwise": EncType.bitwise,
     "ladder": EncType.ladder,
 }
+# 2 kiểu PySAT không có, tự cài trong amo.py
+OWN_AMO = {
+    "commander": amo.commander,
+    "product": amo.product,
+}
+AMO_TYPES = [*PYSAT_AMO, *OWN_AMO]
 
 
 class E3Amo(SatEncoding):
@@ -76,9 +84,13 @@ class E3Amo(SatEncoding):
         for lits in running.values():
             if len(lits) < 2:
                 continue
-            cnf = CardEnc.atmost(lits=lits, bound=1, top_id=self.n_vars, encoding=AMO_TYPES[self.amo])
-            self.n_vars = max(self.n_vars, cnf.nv)
-            for cl in cnf.clauses:
+            if self.amo in OWN_AMO:
+                clauses = OWN_AMO[self.amo](lits, self.new_var)
+            else:
+                cnf = CardEnc.atmost(lits=lits, bound=1, top_id=self.n_vars, encoding=PYSAT_AMO[self.amo])
+                self.n_vars = max(self.n_vars, cnf.nv)
+                clauses = cnf.clauses
+            for cl in clauses:
                 self.add(cl)
 
         # bước thời gian 0 không được nằm giữa bước khác cùng máy (giống verify)

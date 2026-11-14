@@ -18,11 +18,14 @@ from dataclasses import asdict
 from pathlib import Path
 from src.common.bounds_cache import DEFAULT_BOUNDS_FILE, instance_hash, load_bounds
 from src.common.data import load
-from src.common.result import CSV_COLUMNS, Config, Result, ERR, NOSOL
+from src.common.batch_worker import partial_path
+from src.common.result import CSV_COLUMNS, Config, Result, ERR, FEAS, NOSOL
 from src.common.run import _check
 
 ROOT=Path(__file__).resolve().parents[2]
 KEY_COLUMNS=('instance','method','encoding','strategy','solver')
+# Worker tự dừng ở time_limit; watchdog đợi thêm chừng này mới giết, để không mất kết quả khi worker trả hơi trễ.
+WATCHDOG_GRACE=30.0
 
 
 def atomic_text(path,text):
@@ -126,10 +129,19 @@ def execute(source,cfg,*,bounds_file,time_limit,log_path):
                 cwd=ROOT,stdout=log,stderr=subprocess.STDOUT,start_new_session=os.name!='nt',
                 creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name=='nt' else 0)
             try:
-                proc.wait(timeout=max(.001,t0+time_limit-time.perf_counter()))
+                grace=min(WATCHDOG_GRACE,time_limit)
+                proc.wait(timeout=max(.001,t0+time_limit+grace-time.perf_counter()))
             except subprocess.TimeoutExpired:
                 stop_process(proc);res.status=NOSOL
                 res.note='Watchdog hết giờ: chưa nhận kết quả worker; không lấy lịch UB làm nghiệm.'
+                partial=partial_path(output)
+                if partial.exists():
+                    # SAT bị giết giữa chừng: lấy lịch và cận tốt nhất worker đã ghi tạm trước deadline
+                    res=Result(**json.loads(partial.read_text(encoding='utf-8')))
+                    res.lb0=lb;res.ub0=ub;res.time_s=time_limit
+                    res.status=FEAS if res.schedule else NOSOL
+                    res.note='Watchdog hết giờ: lấy kết quả tạm worker đã ghi.'
+                    _check(inst,res)
             except BaseException:
                 stop_process(proc);raise
             else:

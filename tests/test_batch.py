@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from src.common.batch import run_batch, execute, read_rows
 from src.common.bounds_cache import DEFAULT_BOUNDS_FILE
-from src.common.result import Config, Result, ERR, OPT, NOSOL
+from src.common.result import Config, Result, ERR, FEAS, OPT, NOSOL
 
 
 def test_resume_and_cache_manifest(tmp_path,monkeypatch):
@@ -51,6 +51,27 @@ def test_watchdog_terminates_child(tmp_path,monkeypatch):
     assert time.perf_counter()-t0<3
     assert res.status==NOSOL and res.cmax is None
     assert 'Watchdog' in res.note
+
+
+def test_watchdog_uses_partial_result(tmp_path,monkeypatch):
+    # worker ghi kết quả tạm (lịch greedy của ft06, Cmax 55) rồi treo
+    import subprocess
+    original=subprocess.Popen
+    cache=json.loads(DEFAULT_BOUNDS_FILE.read_text(encoding='utf-8'))['instances']['ft06']
+    partial=Result.new('ft06',Config('SAT','E2','incremental','cadical'))
+    partial.schedule=cache['schedule'];partial.cmax=55;partial.bound=47
+
+    def hanging_worker(args,**kw):
+        if isinstance(args,(list,tuple)) and 'src.common.batch_worker' in args:
+            output=args[args.index('--output')+1]
+            Path(output+'.partial').write_text(json.dumps(partial.__dict__),encoding='utf-8')
+            return original([sys.executable,'-c','import time; time.sleep(60)'],**kw)
+        return original(args,**kw)
+    monkeypatch.setattr('src.common.batch.subprocess.Popen',hanging_worker)
+    res=execute('ft06',Config('SAT','E2','incremental','cadical'),bounds_file=DEFAULT_BOUNDS_FILE,
+                time_limit=.5,log_path=tmp_path/'partial.log')
+    assert res.status==FEAS and res.cmax==55 and res.bound==47
+    assert res.time_s==.5
 
 
 def test_batch_real_e2_cpsat(tmp_path):

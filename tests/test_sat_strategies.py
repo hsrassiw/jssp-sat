@@ -10,6 +10,7 @@ from src.common.data import ft06
 from src.common.result import FEAS, NOSOL, OPT, Config
 from src.common.run import run_one
 from src.common.verify import verify
+from src.sat import strategies
 from src.sat.strategies import STRATEGIES, _Cms, _solve_limited, solve
 
 SOLVERS = ["cadical", "glucose", "cryptominisat"]
@@ -43,6 +44,15 @@ def test_no_time(strategy: str) -> None:
     res = solve(ft06(), cfg, lb0=47, ub0=70, deadline=time.perf_counter())
     assert res.status in (NOSOL, FEAS)
     assert res.bound <= 55
+
+
+@pytest.mark.parametrize("strategy", ["incremental", "ub_down", "bisect"])
+def test_save_progress(strategy: str, monkeypatch) -> None:
+    saved = []
+    monkeypatch.setattr(strategies, "save_progress", lambda res: saved.append(res.cmax))
+    cfg = Config(method="SAT", encoding="E2", strategy=strategy, solver="cadical")
+    solve(ft06(), cfg, lb0=47, ub0=70, deadline=time.perf_counter() + 60)
+    assert any(c is not None and c <= 70 for c in saved)
 
 
 def test_cms_stops_at_deadline() -> None:
