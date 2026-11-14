@@ -34,6 +34,8 @@ def get_encoding(name: str) -> type[SatEncoding]:
 
 
 CONFLICT_BUDGET = 10000
+FIRST_BUDGET = 100
+CMS_SECONDS = 2.0
 
 
 def _supports_interrupt(solver: Solver) -> bool:
@@ -50,8 +52,8 @@ class _Cms:
     def __init__(self, clauses: list[list[int]]):
         from pycryptosat import Solver as CmsSolver
 
-        # confl_limit tính cho từng lần solve, gọi lại thì giải tiếp
-        self._s = CmsSolver(threads=1, confl_limit=CONFLICT_BUDGET)
+        # mỗi lần solve dừng sau CONFLICT_BUDGET conflict hoặc CMS_SECONDS giây, gọi lại thì giải tiếp
+        self._s = CmsSolver(threads=1, confl_limit=CONFLICT_BUDGET, time_limit=CMS_SECONDS)
         self._model: list[int] | None = None
         for cl in clauses:
             self._s.add_clause(cl)
@@ -87,9 +89,17 @@ def _new_solver(name: str, clauses: list[list[int]]):
     return Solver(name=name, bootstrap_with=clauses)
 
 
+def _next_budget(budget: int, spent: float, left: float) -> int:
+    # Gấp đôi số conflict mỗi đợt, tối đa CONFLICT_BUDGET.
+    # Dựa vào tốc độ đợt vừa rồi để đợt sau không chạy quá nửa thời gian còn lại.
+    per_second = budget / max(spent, 0.001)
+    return max(FIRST_BUDGET, min(2 * budget, CONFLICT_BUDGET, int(per_second * left / 2)))
+
+
 def _solve_limited(solver: Solver, deadline: float) -> bool | None:
     # Trả về None nếu hết giờ.
     # CaDiCaL không dùng được interrupt() nên phải giải từng đợt conf_budget.
+    # Bài lớn có khi 10000 conflict mất vài phút, nên đợt đầu nhỏ rồi tăng dần.
     if deadline - time.perf_counter() <= 0:
         return None
     timer = None
@@ -98,11 +108,18 @@ def _solve_limited(solver: Solver, deadline: float) -> bool | None:
         timer.daemon = True
         timer.start()
     try:
+        budget = FIRST_BUDGET
         while time.perf_counter() < deadline:
-            solver.conf_budget(CONFLICT_BUDGET)
+            t = time.perf_counter()
+            solver.conf_budget(budget)
             sat = solver.solve_limited(expect_interrupt=timer is not None)
+            now = time.perf_counter()
+            if now > deadline:
+                # xong sau deadline thì không tính, giống CP/MIP dừng đúng giờ
+                return None
             if sat is not None:
                 return sat
+            budget = _next_budget(budget, now - t, deadline - now)
         return None
     finally:
         if timer is not None:
