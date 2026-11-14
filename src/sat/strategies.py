@@ -100,10 +100,13 @@ def _new_solver(name: str, clauses: list[list[int]]):
 
 
 def _next_budget(budget: int, spent: float, left: float) -> int:
-    # Gấp đôi số conflict mỗi đợt, tối đa CONFLICT_BUDGET.
-    # Dựa vào tốc độ đợt vừa rồi để đợt sau không chạy quá nửa thời gian còn lại.
+    # đợt sau gấp đôi đợt trước, nhưng không quá CONFLICT_BUDGET
+    new_budget = min(2 * budget, CONFLICT_BUDGET)
+    # và không chạy quá nửa thời gian còn lại (ước theo tốc độ đợt vừa rồi)
     per_second = budget / max(spent, 0.001)
-    return max(FIRST_BUDGET, min(2 * budget, CONFLICT_BUDGET, int(per_second * left / 2)))
+    new_budget = min(new_budget, int(per_second * left / 2))
+    # ít nhất FIRST_BUDGET
+    return max(new_budget, FIRST_BUDGET)
 
 
 def _solve_limited(solver: Solver, deadline: float) -> bool | None:

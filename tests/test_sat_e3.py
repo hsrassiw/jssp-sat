@@ -54,4 +54,4 @@ def test_e3_zero_duration(amo: str) -> None:
 
 def test_e3_unknown_amo() -> None:
     with pytest.raises(ValueError):
-        E3Amo(ft06(), 55, "commander")
+        E3Amo(ft06(), 55, "totalizer")
