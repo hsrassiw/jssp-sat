@@ -2,28 +2,14 @@
 from __future__ import annotations
 
 import time
-from pathlib import Path
-
 from docplex.cp.model import CpoModel
 
-from src.common.bounds import lower_bound, time_windows, upper_bound
-from src.common.data import load
+from src.common.bounds import time_windows
 from src.common.instance import Instance, Schedule
 from src.common.result import FEAS, NOSOL, OPT, Config, Result
 
 
 def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -> Result:
-
-    if cfg is None:
-        cfg = Config(method="CP", solver="cplex")
-
-    if lb0 is None:
-        lb0 = lower_bound(inst)
-    if ub0 is None:
-        ub0, _ = upper_bound(inst)
-    if deadline is None:
-        deadline = time.perf_counter() + 60.0
-
     res = Result.new(inst.name, cfg)
     res.lb0 = lb0
     res.ub0 = ub0
@@ -32,7 +18,6 @@ def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -
 
     # Khởi tạo mô hình CPLEX CP
     mdl = CpoModel(name=inst.name)
-    #cp_path = "/opt/ibm/ILOG/CPLEX_Studio222/cpoptimizer/bin/x86-64_linux/cpoptimizer"
     es, ls = time_windows(inst, ub0)
 
     # 1. Biến khoảng thời gian (Interval Variables)
@@ -67,6 +52,9 @@ def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -
     mdl.add(mdl.minimize(makespan))
 
     res.encode_time_s = time.perf_counter() - t_enc_start
+    stats = mdl.get_statistics()
+    res.n_vars = stats.get_number_of_variables()
+    res.n_clauses = stats.get_number_of_constraints()
 
     # 5. Cấu hình Solver & Giới hạn thời gian
     remaining_time = max(0.001, deadline - time.perf_counter())
@@ -76,7 +64,7 @@ def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -
     sol = mdl.solve(
         TimeLimit=remaining_time,
         LogVerbosity="Quiet",
-        Workers=1
+        Workers=1,
     )
     res.solve_time_s = time.perf_counter() - t_solve_start
 
@@ -92,7 +80,7 @@ def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -
         else:
             res.status = FEAS
             obj_bound = sol.get_objective_bound()
-            res.bound = int(obj_bound) if obj_bound is not None else lb0
+            res.bound = max(lb0, int(obj_bound)) if obj_bound is not None else lb0
 
         # Giải mã lịch biểu (Schedule)
         schedule: Schedule = []
@@ -106,6 +94,6 @@ def solve(inst: Instance, cfg: Config, *, lb0: int, ub0: int, deadline: float) -
     else:
         res.status = NOSOL
         res.cmax = None
-        res.bound = None
+        res.bound = lb0
 
     return res
