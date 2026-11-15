@@ -1,0 +1,20 @@
+{
+  "instance": "ft20",
+  "method": "SAT",
+  "encoding": "E1",
+  "strategy": "lb_up",
+  "solver": "cryptominisat",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 1119,
+  "lb0": 1119,
+  "ub0": 1345,
+  "time_s": 600.1743905000003,
+  "encode_time_s": 2.431093299999702,
+  "solve_time_s": 596.5719927000009,
+  "n_vars": 225980,
+  "n_clauses": 2448342,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}

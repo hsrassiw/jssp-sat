@@ -1,0 +1,20 @@
+{
+  "instance": "la31",
+  "method": "MIP",
+  "encoding": "-",
+  "strategy": "-",
+  "solver": "cplex",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 1784,
+  "lb0": 1784,
+  "ub0": 1934,
+  "time_s": 598.7760237000002,
+  "encode_time_s": 0.11040320000029169,
+  "solve_time_s": 598.613430399997,
+  "n_vars": 4651,
+  "n_clauses": 9000,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}

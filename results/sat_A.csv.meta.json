@@ -1,0 +1,188 @@
+{
+  "format_version": 1,
+  "source_sha256": "582608df3f289e1570316ee122c274f3ffa76e257d2a8230c260b210fce63d2a",
+  "bounds_sha256": "2576828f0f00662022af8c950ddea98ee88b5d1f2032b21ae548aa5473c2b25a",
+  "instances": {
+    "ft06": "763d149197e98ff33797906d712ebf95e65d1945a7776a1dc5c2cdcfe3b3f7f3",
+    "ft10": "6c472c118c175a47b2fb5f6252b3221e03b26b1f75425b7ce40254aa4657f830",
+    "ft20": "63b9789410a9bc6169d424ed464dd0279b633577f4ac693c2443d3957beafe8f",
+    "la01": "ff7368ccbb5d0dfa8369b75b5343b49b1d3b2ee46ca2c085a97e8d1c2499e75b",
+    "la02": "13ec4c74b73f5dd981885f382e3ff472906e8e89b5f4eb861f7d57d2e5485678",
+    "la03": "ee016c1b3b39be530352cc5219abf3890ac3bcd23b47cf523659470bad99ca85",
+    "la04": "0549591a41a8c4dad70bd21af5c90438350f6828824b09f47cc2be0183ba1af0",
+    "la05": "714ee6cd11ca09ed6286906458c6734321cbfe56f8318819ccf39e4c6d409320",
+    "la06": "d50ac8a930c75afb28c75f1615f1d7cc9ad03c07613d2d3ced8cc62dbd77c9cb",
+    "la07": "0118d35f4f0103c689c8913608ee372b1861ad741c149abb678454f2148520e8",
+    "la08": "cb6bf83f1019aae772de41acd3a45842f26a190507a56744a227a366cb832d34",
+    "la09": "65c3f133ced606840ea41a9b1ca93657bd76bd59f24461d0e58cdef561935dbf",
+    "la10": "4148902b38fc2eef166349a82945e37dc74a97f7fd64c427a6d855eef1800850",
+    "la11": "434a5129136e4e516513fe2e0d0b1e241165b47f31004a5182a5532ef78bf32d",
+    "la12": "b95c79c7beabf323efb35982f204af6e52166b8c3d167d8910a119c978b2a11e",
+    "la13": "e23b694c07f98a8a6f64c94a0cbf774b8c55692655f2a7779cba60a4f1d99f32",
+    "la14": "f4263a2e96c1b07d630b0619705421aa187cca6cc9ac7c8eb2f72391a5b6eaa6",
+    "la15": "8736ee3b59c4d4c897322408b0852fb2b606495faa0bb507fb24b0c6ee8611d9",
+    "la16": "d1c9191d853c571ce3bf6631a93a266796af1c34eb976863256956596e5fe7fd",
+    "la17": "44f4bd70edee0ce8368c702f5fa8b1eefe4d55e63f3fbc241cc1047c219966d3",
+    "la18": "1ae9404165ada0288a577c28b6100bfa15c592458e8efdef3d64671561502c07",
+    "la19": "5ca955e5b8d1c2d0596710c187aa33041e60eb8c6a5b9878cb58078650ac23bf",
+    "la20": "1a81580cbc992966a365b1e9f09abab4b468966ef011706ca8d399640c453ea6"
+  },
+  "configs": [
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "incremental",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "incremental",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "lb_up",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "lb_up",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "lb_up",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "ub_down",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "ub_down",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "ub_down",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "bisect",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "bisect",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "bisect",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "incremental",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "incremental",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "lb_up",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "lb_up",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "lb_up",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "ub_down",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "ub_down",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "ub_down",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "bisect",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "bisect",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "bisect",
+      "solver": "cryptominisat"
+    }
+  ],
+  "time_limit": 600,
+  "python": "3.12.10",
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "machine": "EC2AMAZ-SKKHHCM",
+  "versions": {
+    "python-sat": "1.9.dev22",
+    "ortools": "9.15.6755",
+    "gurobipy": "13.0.3",
+    "cplex": "22.2.0.0",
+    "docplex": "2.32.264"
+  },
+  "timing": "worker read+cache+build+solve; watchdog includes process startup; greedy excluded"
+}
