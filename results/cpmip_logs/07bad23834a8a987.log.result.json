@@ -1,0 +1,20 @@
+{
+  "instance": "swv20",
+  "method": "MIP",
+  "encoding": "-",
+  "strategy": "-",
+  "solver": "cplex",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 2823,
+  "lb0": 2823,
+  "ub0": 2933,
+  "time_s": 598.8691790000012,
+  "encode_time_s": 0.21753880000323988,
+  "solve_time_s": 598.6012661999994,
+  "n_vars": 12751,
+  "n_clauses": 25000,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}

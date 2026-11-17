@@ -1,0 +1,20 @@
+{
+  "instance": "swv12",
+  "method": "MIP",
+  "encoding": "-",
+  "strategy": "-",
+  "solver": "gurobi",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 2829,
+  "lb0": 2829,
+  "ub0": 4060,
+  "time_s": 598.8947748000064,
+  "encode_time_s": 0.7202465000009397,
+  "solve_time_s": 598.1209373999882,
+  "n_vars": 12751,
+  "n_clauses": 25000,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}
