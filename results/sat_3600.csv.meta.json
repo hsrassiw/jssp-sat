@@ -1,0 +1,43 @@
+{
+  "format_version": 1,
+  "source_sha256": "582608df3f289e1570316ee122c274f3ffa76e257d2a8230c260b210fce63d2a",
+  "bounds_sha256": "2576828f0f00662022af8c950ddea98ee88b5d1f2032b21ae548aa5473c2b25a",
+  "instances": {
+    "ft20": "63b9789410a9bc6169d424ed464dd0279b633577f4ac693c2443d3957beafe8f",
+    "la07": "0118d35f4f0103c689c8913608ee372b1861ad741c149abb678454f2148520e8",
+    "la21": "3cdcf1aa2bf8f721a775c8e0db08111e282241c9dce0cf55121107c9e70aa900",
+    "la27": "56afb31c1b0951658e960bcf040e58fae9d4a14347910c12bf2540ad7b794c82",
+    "la29": "5f7d044e91225f6d89afe1e98ca66cebf8039eea75ccd9e02b1c3432d92636ea",
+    "abz7": "e8d651d1286e85f45d27bed52391f0f4bb96082ba92a072a00a00efef02f1e69",
+    "abz9": "1bf393a02903918e1006382c57c4b0421640cf25a388f91aad403cad7c3ece3d",
+    "swv02": "83db604af12319b5b03cfc034f1163f074b4366e7c29a049eb4cb549242fd66e",
+    "yn1": "2beb695454775e1cf3b307efa7e5e62ba80579432194eeae84184c8f38a72faf",
+    "ta31": "ff96fb2bd9315aaa034210fe8c9146937c60c7ca760e60d32675a7d13551a4f2"
+  },
+  "configs": [
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "incremental",
+      "solver": "cadical"
+    }
+  ],
+  "time_limit": 3600.0,
+  "python": "3.12.10",
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "machine": "EC2AMAZ-SKKHHCM",
+  "versions": {
+    "python-sat": "1.9.dev22",
+    "ortools": "9.15.6755",
+    "gurobipy": "13.0.3",
+    "cplex": "22.2.0.0",
+    "docplex": "2.32.264"
+  },
+  "timing": "worker read+cache+build+solve; watchdog includes process startup; greedy excluded"
+}

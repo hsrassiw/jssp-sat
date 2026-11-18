@@ -1,0 +1,20 @@
+{
+  "instance": "ta65",
+  "method": "MIP",
+  "encoding": "-",
+  "strategy": "-",
+  "solver": "gurobi",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 2725,
+  "lb0": 2725,
+  "ub0": 3495,
+  "time_s": 598.9107886999846,
+  "encode_time_s": 1.133474300004309,
+  "solve_time_s": 597.6981476000219,
+  "n_vars": 25501,
+  "n_clauses": 50000,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}
