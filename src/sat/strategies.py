@@ -27,6 +27,9 @@ def get_encoding(name: str) -> type[SatEncoding]:
     if name == "E2":
         from src.sat.e2_order import E2Order
         return E2Order
+    if name == "E4":
+        from src.sat.e4_order_pr import E4OrderPr
+        return E4OrderPr
     if name.startswith("E3-"):
         from src.sat.e3_amo import E3Amo
         return partial(E3Amo, amo=name[3:])
