@@ -1,0 +1,20 @@
+{
+  "instance": "ft10",
+  "method": "SAT",
+  "encoding": "E2",
+  "strategy": "lb_up",
+  "solver": "glucose",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 924,
+  "lb0": 655,
+  "ub0": 1067,
+  "time_s": 599.0190502000005,
+  "encode_time_s": 65.20896249999896,
+  "solve_time_s": 483.5143659000032,
+  "n_vars": 82920,
+  "n_clauses": 497686,
+  "n_calls": 270,
+  "schedule": null,
+  "note": ""
+}

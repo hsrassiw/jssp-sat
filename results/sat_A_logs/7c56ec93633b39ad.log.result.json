@@ -1,0 +1,20 @@
+{
+  "instance": "la07",
+  "method": "SAT",
+  "encoding": "E1",
+  "strategy": "lb_up",
+  "solver": "cryptominisat",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 869,
+  "lb0": 869,
+  "ub0": 894,
+  "time_s": 602.3080818000017,
+  "encode_time_s": 1.127437800001644,
+  "solve_time_s": 600.6084996999998,
+  "n_vars": 131610,
+  "n_clauses": 1102901,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}

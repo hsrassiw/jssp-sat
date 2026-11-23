@@ -1,0 +1,20 @@
+{
+  "instance": "ta69",
+  "method": "MIP",
+  "encoding": "-",
+  "strategy": "-",
+  "solver": "cplex",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 3063,
+  "lb0": 3063,
+  "ub0": 3698,
+  "time_s": 598.8676060000143,
+  "encode_time_s": 0.31585819998872466,
+  "solve_time_s": 598.5006436000112,
+  "n_vars": 25501,
+  "n_clauses": 50000,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}

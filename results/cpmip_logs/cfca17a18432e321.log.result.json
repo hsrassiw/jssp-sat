@@ -1,0 +1,20 @@
+{
+  "instance": "ta76",
+  "method": "MIP",
+  "encoding": "-",
+  "strategy": "-",
+  "solver": "gurobi",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 5342,
+  "lb0": 5342,
+  "ub0": 6138,
+  "time_s": 598.9775567000033,
+  "encode_time_s": 3.1815862999937963,
+  "solve_time_s": 595.630285399995,
+  "n_vars": 101001,
+  "n_clauses": 200000,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}

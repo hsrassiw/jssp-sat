@@ -1,0 +1,34 @@
+{
+  "format_version": 1,
+  "source_sha256": "582608df3f289e1570316ee122c274f3ffa76e257d2a8230c260b210fce63d2a",
+  "bounds_sha256": "2576828f0f00662022af8c950ddea98ee88b5d1f2032b21ae548aa5473c2b25a",
+  "instances": {
+    "ta41": "239456d69c22f24975d7794106ab9762f2a953edd853089ad428bc508601d9ef"
+  },
+  "configs": [
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "incremental",
+      "solver": "cadical"
+    }
+  ],
+  "time_limit": 600.0,
+  "python": "3.12.10",
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "machine": "EC2AMAZ-SKKHHCM",
+  "versions": {
+    "python-sat": "1.9.dev22",
+    "ortools": "9.15.6755",
+    "gurobipy": "13.0.3",
+    "cplex": "22.2.0.0",
+    "docplex": "2.32.264"
+  },
+  "timing": "worker read+cache+build+solve; watchdog includes process startup; greedy excluded"
+}

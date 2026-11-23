@@ -1,0 +1,383 @@
+{
+  "format_version": 1,
+  "source_sha256": "582608df3f289e1570316ee122c274f3ffa76e257d2a8230c260b210fce63d2a",
+  "bounds_sha256": "2576828f0f00662022af8c950ddea98ee88b5d1f2032b21ae548aa5473c2b25a",
+  "instances": {
+    "ft06": "763d149197e98ff33797906d712ebf95e65d1945a7776a1dc5c2cdcfe3b3f7f3",
+    "la01": "ff7368ccbb5d0dfa8369b75b5343b49b1d3b2ee46ca2c085a97e8d1c2499e75b"
+  },
+  "configs": [
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "incremental",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "incremental",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "lb_up",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "lb_up",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "lb_up",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "ub_down",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "ub_down",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "ub_down",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "bisect",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "bisect",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E1",
+      "strategy": "bisect",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "incremental",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "incremental",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "lb_up",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "lb_up",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "lb_up",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "ub_down",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "ub_down",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "ub_down",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "bisect",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "bisect",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E2",
+      "strategy": "bisect",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "incremental",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "incremental",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "lb_up",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "lb_up",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "lb_up",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "ub_down",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "ub_down",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "ub_down",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "bisect",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "bisect",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-pairwise",
+      "strategy": "bisect",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "incremental",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "incremental",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "lb_up",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "lb_up",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "lb_up",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "ub_down",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "ub_down",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "ub_down",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "bisect",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "bisect",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-commander",
+      "strategy": "bisect",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "incremental",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "incremental",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "incremental",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "lb_up",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "lb_up",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "lb_up",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "ub_down",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "ub_down",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "ub_down",
+      "solver": "cryptominisat"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "bisect",
+      "solver": "cadical"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "bisect",
+      "solver": "glucose"
+    },
+    {
+      "method": "SAT",
+      "encoding": "E3-product",
+      "strategy": "bisect",
+      "solver": "cryptominisat"
+    }
+  ],
+  "time_limit": 60.0,
+  "python": "3.12.10",
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "machine": "EC2AMAZ-SKKHHCM",
+  "versions": {
+    "python-sat": "1.9.dev22",
+    "ortools": "9.15.6755",
+    "gurobipy": "13.0.3",
+    "cplex": "22.2.0.0",
+    "docplex": "2.32.264"
+  },
+  "timing": "worker read+cache+build+solve; watchdog includes process startup; greedy excluded"
+}

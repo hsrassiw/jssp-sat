@@ -1,0 +1,20 @@
+{
+  "instance": "la07",
+  "method": "SAT",
+  "encoding": "E2",
+  "strategy": "bisect",
+  "solver": "cadical",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 869,
+  "lb0": 869,
+  "ub0": 894,
+  "time_s": 598.9602405000041,
+  "encode_time_s": 0.8230525999970268,
+  "solve_time_s": 597.3142866999988,
+  "n_vars": 94925,
+  "n_clauses": 838896,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}

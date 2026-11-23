@@ -1,0 +1,20 @@
+{
+  "instance": "ta52",
+  "method": "MIP",
+  "encoding": "-",
+  "strategy": "-",
+  "solver": "gurobi",
+  "status": "NOSOL",
+  "cmax": null,
+  "bound": 2756,
+  "lb0": 2756,
+  "ub0": 3294,
+  "time_s": 598.9192388000083,
+  "encode_time_s": 0.8350470000004862,
+  "solve_time_s": 598.008577200002,
+  "n_vars": 19126,
+  "n_clauses": 37500,
+  "n_calls": 1,
+  "schedule": null,
+  "note": ""
+}

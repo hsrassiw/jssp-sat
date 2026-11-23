@@ -1,0 +1,47 @@
+{
+  "format_version": 1,
+  "source_sha256": "582608df3f289e1570316ee122c274f3ffa76e257d2a8230c260b210fce63d2a",
+  "bounds_sha256": "2576828f0f00662022af8c950ddea98ee88b5d1f2032b21ae548aa5473c2b25a",
+  "instances": {
+    "la21": "3cdcf1aa2bf8f721a775c8e0db08111e282241c9dce0cf55121107c9e70aa900",
+    "ta51": "185b73f181fbd1042b2763fce8c5136fcc3198603796efa89b3c06f8b86c77b2"
+  },
+  "configs": [
+    {
+      "method": "CP",
+      "encoding": "-",
+      "strategy": "-",
+      "solver": "cpsat"
+    },
+    {
+      "method": "CP",
+      "encoding": "-",
+      "strategy": "-",
+      "solver": "cplex"
+    },
+    {
+      "method": "MIP",
+      "encoding": "-",
+      "strategy": "-",
+      "solver": "gurobi"
+    },
+    {
+      "method": "MIP",
+      "encoding": "-",
+      "strategy": "-",
+      "solver": "cplex"
+    }
+  ],
+  "time_limit": 60.0,
+  "python": "3.12.10",
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "machine": "EC2AMAZ-SKKHHCM",
+  "versions": {
+    "python-sat": "1.9.dev22",
+    "ortools": "9.15.6755",
+    "gurobipy": "13.0.3",
+    "cplex": "22.2.0.0",
+    "docplex": "2.32.264"
+  },
+  "timing": "worker read+cache+build+solve; watchdog includes process startup; greedy excluded"
+}
